@@ -20,13 +20,9 @@
               </div>
               <v-flex class="caption text-xs-right"><router-link to="/recover-password">Forgot your password?</router-link></v-flex>
             </v-card-text>
-            <vue-recaptcha ref="recaptcha"
-                  @verify="onCaptchaVerified"
-                  @expired="onCaptchaExpired"
-                  sitekey="6Lfgdy8aAAAAAJvD3wOdEG4OgzhscCdfynR-pWgz"></vue-recaptcha>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn disabled="status==='submitting'" type="submit" @click.prevent="submit">Login</v-btn>
+              <v-btn @click.prevent="submit">Login</v-btn>
             </v-card-actions>
           </v-card>
         </v-flex>
@@ -35,16 +31,12 @@
   </v-content>
 </template>
 
-<script src="https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit" async defer>
-</script>
-
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { api } from '@/api';
 import { appName } from '@/env';
 import { readLoginError } from '@/store/main/getters';
 import { dispatchLogIn } from '@/store/main/actions';
-import VueRecaptcha from 'vue-recaptcha';
 
 @Component
 export default class Login extends Vue {
@@ -57,7 +49,6 @@ export default class Login extends Vue {
   }
 
   public submit() {
-
     dispatchLogIn(this.$store, {username: this.email, password: this.password});
   }
 }
