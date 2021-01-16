@@ -37,6 +37,25 @@
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
+        <v-list>
+          <v-subheader>Secrets</v-subheader>
+          <v-list-tile to="/main/profile/secrets/all">
+            <v-list-tile-action>
+              <v-icon>collections_bookmark</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>Show secrets</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-list-tile to="/main/profile/secrets/add">
+            <v-list-tile-action>
+              <v-icon>book</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>Add Secret</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
         <v-divider></v-divider>
         <v-list subheader v-show="hasAdminAccess">
           <v-subheader>Admin</v-subheader>

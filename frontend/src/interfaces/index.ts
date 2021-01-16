@@ -21,3 +21,18 @@ export interface IUserProfileCreate {
     is_active?: boolean;
     is_superuser?: boolean;
 }
+
+export interface ISecret {
+    login: string;
+    id: number;
+}
+
+export interface ISecretUpdate {
+    login?: string;
+    password?: string;
+}
+
+export interface IAddSecret {
+    login: string;
+    password?: string;
+}

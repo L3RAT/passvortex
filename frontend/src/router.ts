@@ -56,6 +56,26 @@ export default new Router({
                   component: () => import(
                     /* webpackChunkName: "main-profile-password" */ './views/main/profile/UserProfileEditPassword.vue'),
                 },
+                {
+                  path: 'secrets',
+                  redirect: 'secrets/all',
+                },
+                {
+                  path: 'secrets/all',
+                  component: () => import(
+                    /* webpackChunkName: "main-profile-secrets" */ './views/main/profile/ShowSecrets.vue'),
+                },
+                {
+                  path: 'secrets/edit/:id',
+                  name: 'main-profile-secrets-edit',
+                  component: () => import(
+                    /* webpackChunkName: "main-profile-secrets-edit" */ './views/main/profile/EditSecret.vue'),
+                },
+                {
+                  path: 'secrets/add',
+                  component: () => import(
+                    /* webpackChunkName: "main-profile-add-secret" */ './views/main/profile/AddSecret.vue'),
+                },
               ],
             },
             {

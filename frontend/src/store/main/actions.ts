@@ -1,6 +1,7 @@
 import { api } from '@/api';
 import router from '@/router';
 import { getLocalToken, removeLocalToken, saveLocalToken } from '@/utils';
+import { IAddSecret, ISecretUpdate } from '@/interfaces';
 import { AxiosError } from 'axios';
 import { getStoreAccessors } from 'typesafe-vuex';
 import { ActionContext } from 'vuex';
@@ -12,8 +13,11 @@ import {
     commitSetLogInError,
     commitSetToken,
     commitSetUserProfile,
+    commitSetSecret,
+    commitSetSecrets,
 } from './mutations';
 import { AppNotification, MainState } from './state';
+import { CryptoJS } from 'crypto-js';
 
 type MainContext = ActionContext<MainState, State>;
 
@@ -154,6 +158,47 @@ export const actions = {
             commitAddNotification(context, { color: 'error', content: 'Error resetting password' });
         }
     },
+    async getSecrets(context: MainContext) {
+        try {
+            const response = await api.getSecrets(context.rootState.main.token);
+            if (response) {
+                commitSetSecrets(context, response.data);
+            }
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    },
+    async updateSecret(context: MainContext, payload: { id: number, secret: ISecretUpdate }) {
+        try {
+            const loadingNotification = { content: 'saving', showProgress: true };
+            commitAddNotification(context, loadingNotification);
+            const response = (await Promise.all([
+                api.updateSecret(context.rootState.main.token, payload.id, payload.secret),
+                await new Promise((resolve, reject) => setTimeout(() => resolve(), 500)),
+            ]))[0];
+            commitSetSecret(context, response.data);
+            commitRemoveNotification(context, loadingNotification);
+            commitAddNotification(context, { content: 'Secret successfully updated', color: 'success' });
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    },
+    async addSecret(context: MainContext, payload: IAddSecret) {
+        try {
+            const loadingNotification = { content: 'saving', showProgress: true };
+            commitAddNotification(context, loadingNotification);
+            console.log(payload.password);
+            const response = (await Promise.all([
+                api.addSecret(context.rootState.main.token, payload),
+                await new Promise((resolve, reject) => setTimeout(() => resolve(), 500)),
+            ]))[0];
+            commitSetSecret(context, response.data);
+            commitRemoveNotification(context, loadingNotification);
+            commitAddNotification(context, { content: 'Secret successfully created', color: 'success' });
+        } catch (error) {
+            await dispatchCheckApiError(context, error);
+        }
+    },
 };
 
 const { dispatch } = getStoreAccessors<MainState | any, State>('');
@@ -171,3 +216,6 @@ export const dispatchUpdateUserProfile = dispatch(actions.actionUpdateUserProfil
 export const dispatchRemoveNotification = dispatch(actions.removeNotification);
 export const dispatchPasswordRecovery = dispatch(actions.passwordRecovery);
 export const dispatchResetPassword = dispatch(actions.resetPassword);
+export const dispatchAddSecret = dispatch(actions.addSecret);
+export const dispatchUpdateSecret = dispatch(actions.updateSecret);
+export const dispatchGetSecrets = dispatch(actions.getSecrets);

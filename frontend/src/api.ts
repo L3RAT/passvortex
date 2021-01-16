@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { apiUrl } from '@/env';
 import { IUserProfile, IUserProfileUpdate, IUserProfileCreate } from './interfaces';
+import { ISecret, ISecretUpdate, IAddSecret } from './interfaces';
 
 function authHeaders(token: string) {
   return {
@@ -32,6 +33,15 @@ export const api = {
   },
   async createUser(token: string, data: IUserProfileCreate) {
     return axios.post(`${apiUrl}/api/v1/users/`, data, authHeaders(token));
+  },
+  async getSecrets(token: string) {
+    return axios.get<ISecret[]>(`${apiUrl}/api/v1/items/`, authHeaders(token));
+  },
+  async updateSecret(token: string, secretId: number, data: ISecretUpdate) {
+    return axios.put(`${apiUrl}/api/v1/items/${secretId}`, data, authHeaders(token));
+  },
+  async addSecret(token: string, data: IAddSecret) {
+    return axios.post(`${apiUrl}/api/v1/items/`, data, authHeaders(token));
   },
   async passwordRecovery(email: string) {
     return axios.post(`${apiUrl}/api/v1/password-recovery/${email}`);

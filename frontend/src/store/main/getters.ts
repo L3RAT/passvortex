@@ -12,6 +12,13 @@ export const getters = {
     dashboardShowDrawer: (state: MainState) => state.dashboardShowDrawer,
     dashboardMiniDrawer: (state: MainState) => state.dashboardMiniDrawer,
     userProfile: (state: MainState) => state.userProfile,
+    secrets: (state: MainState) => state.secrets,
+    oneSecret: (state: MainState) => (secretId: number) => {
+        const filteredSecrets = state.secrets.filter((secret) => secret.id === secretId);
+        if (filteredSecrets.length > 0) {
+            return { ...filteredSecrets[0] };
+        }
+    },
     token: (state: MainState) => state.token,
     isLoggedIn: (state: MainState) => state.isLoggedIn,
     firstNotification: (state: MainState) => state.notifications.length > 0 && state.notifications[0],
@@ -27,3 +34,5 @@ export const readLoginError = read(getters.loginError);
 export const readToken = read(getters.token);
 export const readUserProfile = read(getters.userProfile);
 export const readFirstNotification = read(getters.firstNotification);
+export const readSecrets = read(getters.secrets);
+export const readOneSecret = read(getters.oneSecret);

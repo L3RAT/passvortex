@@ -8,6 +8,7 @@ const defaultState: MainState = {
   token: '',
   logInError: false,
   userProfile: null,
+  secrets: [],
   dashboardMiniDrawer: false,
   dashboardShowDrawer: true,
   notifications: [],
