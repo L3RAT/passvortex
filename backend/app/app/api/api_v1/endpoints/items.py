@@ -1,10 +1,10 @@
 from typing import Any, List
-
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-
+from app.core.security import decrypt_secret
 from app import crud, models, schemas
 from app.api import deps
+import json
 
 router = APIRouter()
 
@@ -25,6 +25,10 @@ def read_items(
         items = crud.item.get_multi_by_owner(
             db=db, owner_id=current_user.id, skip=skip, limit=limit
         )
+    
+    for item in items:
+        item.password = decrypt_secret(json.loads(item.password.replace("'", "\"")), "temp")
+        
     return items
 
 
@@ -77,6 +81,7 @@ def read_item(
         raise HTTPException(status_code=404, detail="Item not found")
     if not crud.user.is_superuser(current_user) and (item.owner_id != current_user.id):
         raise HTTPException(status_code=400, detail="Not enough permissions")
+    print("lol")
     return item
 
 

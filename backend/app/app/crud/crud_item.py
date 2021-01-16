@@ -1,12 +1,11 @@
 from typing import List
-
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
-
+from app.core.security import encrypt_secret
 from app.crud.base import CRUDBase
 from app.models.item import Item
 from app.schemas.item import ItemCreate, ItemUpdate
-
+import json
 
 class CRUDItem(CRUDBase[Item, ItemCreate, ItemUpdate]):
     def create_with_owner(
@@ -14,7 +13,7 @@ class CRUDItem(CRUDBase[Item, ItemCreate, ItemUpdate]):
     ) -> Item:
         db_obj = Item(
             login=obj_in.login,
-            hashed_password=get_password_hash(obj_in.password),
+            password=str(encrypt_secret(obj_in.password, "temp")),
             owner_id=owner_id,
         )
         db.add(db_obj)

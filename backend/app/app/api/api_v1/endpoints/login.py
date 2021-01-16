@@ -15,6 +15,7 @@ from app.utils import (
     send_reset_password_email,
     verify_password_reset_token,
 )
+import time
 
 router = APIRouter()
 
@@ -30,6 +31,7 @@ def login_access_token(
         db, email=form_data.username, password=form_data.password
     )
     if not user:
+        time.sleep(1)
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     elif not crud.user.is_active(user):
         raise HTTPException(status_code=400, detail="Inactive user")
