@@ -187,7 +187,6 @@ export const actions = {
         try {
             const loadingNotification = { content: 'saving', showProgress: true };
             commitAddNotification(context, loadingNotification);
-            console.log(payload.password);
             const response = (await Promise.all([
                 api.addSecret(context.rootState.main.token, payload),
                 await new Promise((resolve, reject) => setTimeout(() => resolve(), 500)),

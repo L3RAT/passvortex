@@ -20,9 +20,12 @@
               </div>
               <v-flex class="caption text-xs-right"><router-link to="/recover-password">Forgot your password?</router-link></v-flex>
             </v-card-text>
+            <v-layout align-center justify-center>
+                <recaptcha2 @change="robotChange"></recaptcha2>
+            </v-layout>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn @click.prevent="submit">Login</v-btn>
+              <v-btn @click.prevent="submit" :disabled="isSendDisabled">Login</v-btn>
             </v-card-actions>
           </v-card>
         </v-flex>
@@ -31,18 +34,33 @@
   </v-content>
 </template>
 
+<script src="https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit" async defer>
+</script>
+
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { api } from '@/api';
 import { appName } from '@/env';
 import { readLoginError } from '@/store/main/getters';
 import { dispatchLogIn } from '@/store/main/actions';
+import Recaptcha2 from '@/views/Recaptcha2.vue';
+
+Vue.component('recaptcha2', Recaptcha2);
 
 @Component
 export default class Login extends Vue {
   public email: string = '';
   public password: string = '';
   public appName = appName;
+  public isHuman: boolean = false;
+
+  public get isSendDisabled(): boolean {
+    return !this.isHuman;
+  }
+
+  public robotChange(v: boolean) {
+    this.isHuman = v;
+  }
 
   public get loginError() {
     return readLoginError(this.$store);

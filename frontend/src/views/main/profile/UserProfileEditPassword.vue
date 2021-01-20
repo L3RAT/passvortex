@@ -19,7 +19,7 @@
               data-vv-name="password"
               data-vv-delay="100"
               data-vv-rules="required"
-              v-validate="'required'"
+              v-validate="{required: true, min:8 , verify_password}"
               v-model="password1"
               :error-messages="errors.first('password')">
             </v-text-field>
@@ -53,6 +53,16 @@ import { Store } from 'vuex';
 import { IUserProfileUpdate } from '@/interfaces';
 import { readUserProfile } from '@/store/main/getters';
 import { dispatchUpdateUserProfile } from '@/store/main/actions';
+
+import VeeValidate from 'vee-validate';
+Vue.use(VeeValidate);
+VeeValidate.Validator.extend('verify_password', {
+    getMessage: (field) => `The password must contain at least: 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character`,
+    validate: (value) => {
+        const strongRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})');
+        return strongRegex.test(value);
+    },
+});
 
 @Component
 export default class UserProfileEdit extends Vue {
